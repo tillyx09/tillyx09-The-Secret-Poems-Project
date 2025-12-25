@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Secret Poems — Submit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<style>
+/* Page fade transition */
+.fade-out { opacity:0; transition: opacity 0.6s ease; }
+.fade-in { opacity:0; animation: fadeInPage 0.8s forwards; }
+@keyframes fadeInPage { to{opacity:1;} }
+
+:root{
+  --bg1:#3b2f2f;
+  --bg2:#6b4f3a;
+  --gold:#d4a76a;
+  --cream:#f6efe6;
+  --hover: rgba(212,167,106,0.25);
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:Georgia,"Times New Roman",serif;
+}
+
+body{
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(255,240,225,0.06), transparent),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  padding:32px;
+  color:var(--cream);
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+
+/* Navbar */
+.navbar{
+  text-align:center;
+  margin-bottom:24px;
+}
+.navbar a{
+  color: var(--gold);
+  text-decoration:none;
+  font-weight:700;
+  margin:0 12px;
+}
+.navbar a:hover{
+  text-decoration:underline;
+}
+
+/* Card */
+.card{
+  width:100%;
+  max-width:900px;
+  background:rgba(255,255,255,0.04);
+  padding:32px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 10px 40px rgba(0,0,0,0.55);
+  animation: riseIn 0.9s ease forwards;
+}
+
+@keyframes riseIn{
+  from{opacity:0; transform:translateY(25px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+h1{
+  margin:0;
+  font-family:"Playfair Display";
+  font-size:30px;
+}
+
+.subtitle{
+  margin-top:8px;
+  opacity:0.8;
+  font-size:15px;
+}
+
+/* Form */
+form{margin-top:22px;}
+
+textarea{
+  width:100%;
+  min-height:200px;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,250,240,0.05);
+  color:var(--cream);
+  font-size:15px;
+  resize:vertical;
+  transition:border 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea:focus{
+  outline:none;
+  border-color: var(--gold);
+  box-shadow:0 0 0 2px rgba(212,167,106,0.15);
+}
+
+button{
+  margin-top:18px;
+  background:linear-gradient(180deg,var(--gold),#b0713a);
+  border:none;
+  padding:12px 20px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+  color:#111;
+  transition:all 0.3s ease;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px var(--hover);
+}
+
+/* Links */
+.back{
+  margin-top:22px;
+}
+
+a{
+  color:var(--gold);
+  text-decoration:none;
+  font-weight:600;
+}
+
+a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+
+<body class="fade-in">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="poems.html">Poems</a>
+</div>
+
+<div class="card">
+  <h1>Submit Your Poem</h1>
+  <p class="subtitle">
+    Write honestly. Write softly. Your voice stays anonymous.
+  </p>
+
+  <form id="poem-form">
+    <textarea id="poem-text" placeholder="Write your poem here…"></textarea>
+    <button type="submit">Submit Poem</button>
+  </form>
+
+  <div class="back">
+    <a href="index.html">← Back to Home</a>
+  </div>
+</div>
+
+<script type="module" src="script.js"></script>
+
+<script>
+/* Smooth page transition */
+document.querySelectorAll('a').forEach(link=>{
+  if(link.target === "_blank") return;
+  link.addEventListener('click', e=>{
+    e.preventDefault();
+    document.body.classList.add('fade-out');
+    setTimeout(()=>{ window.location = link.href; }, 600);
+  });
+});
+</script>
+
+</body>
+</html>

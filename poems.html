@@ -1,0 +1,202 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secret Poems — Poems</title>
+
+<style>
+/* Page fade transition */
+.fade-out { opacity:0; transition: opacity 0.6s ease; }
+.fade-in { opacity:0; animation: fadeInPage 0.6s forwards; }
+@keyframes fadeInPage { to{opacity:1;} }
+
+:root{
+  --bg1:#3b2f2f;
+  --bg2:#6b4f3a;
+  --gold:#d4a76a;
+  --cream:#f6efe6;
+  --hover: rgba(212,167,106,0.2);
+}
+
+html,body{
+  margin:0; padding:0; height:100%;
+  font-family: Georgia, "Times New Roman", serif;
+  background: linear-gradient(180deg,var(--bg1), var(--bg2));
+  color: var(--cream);
+}
+
+body{display:flex; flex-direction:column; align-items:center; padding:32px;}
+
+/* Navbar */
+.navbar{
+  text-align:center;
+  margin-bottom:24px;
+}
+.navbar a{
+  color: var(--gold);
+  text-decoration:none;
+  font-weight:700;
+  margin:0 12px;
+}
+.navbar a:hover{
+  text-decoration:underline;
+}
+
+/* Card */
+.card{
+  width:100%; max-width:920px;
+  background: rgba(255,255,255,0.04);
+  border-radius:16px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.6);
+  padding:28px;
+  border:1px solid rgba(212,167,106,0.07);
+  display:grid; grid-template-columns:1fr; gap:20px;
+}
+
+h1{text-align:center; font-family:"Playfair Display"; font-size:32px; margin-bottom:16px;}
+
+.poem{
+  background: rgba(0,0,0,0.12);
+  padding:16px;
+  border-radius:12px;
+  display:flex; flex-direction:column; gap:8px;
+  opacity:0; transform:translateY(20px);
+  animation: fadeInUp 0.6s forwards;
+}
+
+@keyframes fadeInUp{to{opacity:1; transform:translateY(0);}}
+
+.poem-buttons{display:flex; gap:12px; margin-top:8px;}
+
+button{
+  background: linear-gradient(180deg,var(--gold),#b0713a);
+  border:none; padding:6px 12px; border-radius:8px;
+  cursor:pointer; font-weight:700; color:#111;
+  transition: all 0.3s ease;
+}
+
+button:hover{transform: translateY(-2px); box-shadow: 0 6px 15px var(--hover);}
+
+textarea.comment-box{
+  width:100%; padding:10px; border-radius:8px; border:none;
+  resize:none; font-family: Georgia, "Times New Roman", serif; margin-top:8px;
+}
+
+.comment{
+  background: rgba(255,255,255,0.05);
+  padding:6px 10px; border-radius:6px;
+  font-size:14px; margin-top:4px;
+}
+
+a{color: var(--gold); text-decoration:none; transition: all 0.2s ease;}
+a:hover{text-decoration:underline;}
+</style>
+</head>
+
+<body class="fade-in">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="poems.html">Poems</a>
+  <a href="submit.html">Submit</a>
+</div>
+
+<div class="card">
+  <h1>All Poems</h1>
+  <div id="poems-container">Loading poems...</div>
+  <p style="margin-top:20px;"><a href="index.html">← Back to Home</a></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, arrayUnion, serverTimestamp, orderBy, query } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCGmnkS6eXxDzt2cDpH86s-RNJuAOyk8Os",
+  authDomain: "anonymous-poetry.firebaseapp.com",
+  projectId: "anonymous-poetry",
+  storageBucket: "anonymous-poetry.appspot.com",
+  messagingSenderId: "556609883473",
+  appId: "1:556609883473:web:96564552801ef4dc9cd770"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function loadPoems(){
+  const container = document.getElementById("poems-container");
+  container.innerHTML = "";
+  const q = query(collection(db,"poems"), orderBy("createdAt","desc"));
+  const snapshot = await getDocs(q);
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const div = document.createElement("div");
+    div.className = "poem";
+    
+    div.innerHTML = `
+      <p>${data.content}</p>
+      <small>— ${data.name || "unknown"}</small>
+      <div class="poem-buttons">
+        <button class="like-btn">❤️ ${data.likes || 0}</button>
+        <button class="comment-btn">💬 Comment</button>
+      </div>
+      <div class="comment-section"></div>
+    `;
+    const likeBtn = div.querySelector(".like-btn");
+    likeBtn.addEventListener("click", async () => {
+      const docRef = doc(db,"poems",docSnap.id);
+      await updateDoc(docRef,{likes:(data.likes||0)+1});
+      loadPoems();
+    });
+    const commentBtn = div.querySelector(".comment-btn");
+    const commentSection = div.querySelector(".comment-section");
+    let commentBox = null;
+    commentBtn.addEventListener("click", ()=>{
+      if(commentBox) return;
+      commentBox = document.createElement("textarea");
+      commentBox.className="comment-box";
+      commentBox.placeholder="Write your comment...";
+      const submitComment = document.createElement("button");
+      submitComment.textContent="Submit";
+      submitComment.style.marginTop="4px";
+      submitComment.onclick = async ()=>{
+        const commentText = commentBox.value.trim();
+        if(!commentText) return;
+        const docRef = doc(db,"poems",docSnap.id);
+        await updateDoc(docRef,{comments: arrayUnion(commentText)});
+        loadPoems();
+      };
+      commentSection.appendChild(commentBox);
+      commentSection.appendChild(submitComment);
+      commentBox.focus();
+    });
+    if(data.comments){
+      data.comments.forEach(c=>{
+        const cDiv = document.createElement("div");
+        cDiv.className="comment";
+        cDiv.textContent=c;
+        commentSection.appendChild(cDiv);
+      });
+    }
+    container.appendChild(div);
+  });
+}
+
+window.addEventListener("DOMContentLoaded", loadPoems);
+
+// Fade page transitions
+document.querySelectorAll('a').forEach(link=>{
+  if(link.target==='blank') return;
+  link.addEventListener('click', e=>{
+    e.preventDefault();
+    document.body.classList.add('fade-out');
+    setTimeout(()=>{ window.location = link.href; }, 600);
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secret Poems — About</title>
+
+<style>
+/* Page fade transition */
+.fade-out { opacity:0; transition: opacity 0.6s ease; }
+.fade-in { opacity:0; animation: fadeInPage 0.8s forwards; }
+@keyframes fadeInPage { to{opacity:1;} }
+
+:root{
+  --bg1:#3b2f2f;
+  --bg2:#6b4f3a;
+  --gold:#d4a76a;
+  --cream:#f6efe6;
+  --hover: rgba(212,167,106,0.25);
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family: Georgia, "Times New Roman", serif;
+  background: linear-gradient(180deg,var(--bg1), var(--bg2));
+  color: var(--cream);
+}
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:32px;
+}
+
+/* Navbar */
+.navbar{
+  text-align:center;
+  margin-bottom:24px;
+}
+.navbar a{
+  color: var(--gold);
+  text-decoration:none;
+  font-weight:700;
+  margin:0 12px;
+}
+.navbar a:hover{
+  text-decoration:underline;
+}
+
+/* Card */
+.card{
+  max-width:820px;
+  width:100%;
+  background: rgba(255,255,255,0.04);
+  padding:36px;
+  border-radius:18px;
+  box-shadow:0 12px 45px rgba(0,0,0,0.6);
+  border:1px solid rgba(212,167,106,0.08);
+  animation: riseIn 0.9s ease forwards;
+}
+
+@keyframes riseIn{
+  from{opacity:0; transform:translateY(25px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+h1{
+  font-family:"Playfair Display";
+  font-size:38px;
+  margin-bottom:14px;
+  text-align:center;
+}
+
+.section{
+  margin-top:22px;
+}
+
+p{
+  font-size:16px;
+  line-height:1.7;
+  margin-bottom:14px;
+  opacity:0.95;
+}
+
+/* Quote */
+.quote{
+  font-style: italic;
+  text-align:center;
+  margin:32px 0;
+  font-size:19px;
+  opacity:0.85;
+  padding:0 10px;
+}
+
+/* Links */
+.connect{
+  margin-top:28px;
+  text-align:center;
+}
+
+.connect a{
+  color:var(--gold);
+  text-decoration:none;
+  font-weight:700;
+  font-size:16px;
+  padding:10px 18px;
+  border-radius:12px;
+  border:1px solid rgba(212,167,106,0.4);
+  transition:all 0.3s ease;
+}
+
+.connect a:hover{
+  background: rgba(212,167,106,0.12);
+  transform: translateY(-2px);
+}
+
+/* Back button */
+.back{
+  margin-top:36px;
+  text-align:center;
+}
+
+.back a{
+  display:inline-block;
+  background: linear-gradient(180deg,var(--gold), #b0713a);
+  padding:12px 22px;
+  border-radius:14px;
+  text-decoration:none;
+  color:#111;
+  font-weight:700;
+  transition: all 0.3s ease;
+}
+
+.back a:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px var(--hover);
+}
+</style>
+</head>
+
+<body class="fade-in">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="poems.html">Poems</a>
+  <a href="submit.html">Submit</a>
+</div>
+
+<div class="card">
+  <h1>About Me</h1>
+
+  <div class="section">
+    <p>
+      Hi, I’m Tilly (or Tala). I’m a Palestinian girl born in 2009, currently living in  Amman Jordan.
+      I’ve never stepped foot in Palestine, yet my heart lives in it.
+    </p>
+
+    <p>
+      I’ve been drawn to coding and the internet world for as long as I can remember.
+      I’m a book lover, a poem writer, and someone who believes words can hold more than we expect.
+    </p>
+  </div>
+
+  <div class="quote">
+    “We don’t write our poems and thoughts they write and shape us.”
+  </div>
+
+  <div class="section">
+    <p>
+      I created this project to have a safe space for people like me 
+      those who write from feelings from experinces,from pains, from honesty and from a simple love for words.
+      Here, your poems don’t need names. They just need to exist.
+    </p>
+  </div>
+
+  <div class="connect">
+    <a href="https://www.instagram.com/tala_hussien09/" target="_blank">
+      Follow me on Instagram
+    </a>
+  </div>
+
+  <div class="back">
+    <a href="index.html">← Back to Home</a>
+  </div>
+</div>
+
+<script>
+/* Smooth page transition */
+document.querySelectorAll('a').forEach(link=>{
+  if(link.target === "_blank") return;
+  link.addEventListener('click', e=>{
+    e.preventDefault();
+    document.body.classList.add('fade-out');
+    setTimeout(()=>{ window.location = link.href; }, 600);
+  });
+});
+</script>
+
+</body>
+</html>
